@@ -19,14 +19,23 @@ const helmet = require('helmet');
 
 const app = express();
 const server = http.createServer(app);
+// CORS configuration - update for production!
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? ['https://3d-mc.netlify.app', 'https://mcerqua.netlify.app'] 
+  : ['http://localhost:8080', 'http://localhost:3000', 'http://localhost:3001'];
+
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 
 // Security middleware

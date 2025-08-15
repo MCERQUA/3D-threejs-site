@@ -38,9 +38,16 @@ sudo systemctl enable nginx
 
 # Create PostgreSQL database and user
 echo "🗄️ Setting up PostgreSQL database..."
+echo "⚠️  Please set DB_PASSWORD environment variable before running this script"
+if [ -z "$DB_PASSWORD" ]; then
+    echo "❌ Error: DB_PASSWORD environment variable not set"
+    echo "   Run: export DB_PASSWORD='your-secure-password'"
+    exit 1
+fi
+
 sudo -u postgres psql <<EOF
 CREATE DATABASE threedworld;
-CREATE USER threedworld WITH ENCRYPTED PASSWORD 'Secure3DWorld2025!';
+CREATE USER threedworld WITH ENCRYPTED PASSWORD '$DB_PASSWORD';
 GRANT ALL PRIVILEGES ON DATABASE threedworld TO threedworld;
 \q
 EOF
@@ -68,7 +75,7 @@ echo ""
 echo "Database credentials:"
 echo "  Database: threedworld"
 echo "  Username: threedworld"
-echo "  Password: Secure3DWorld2025!"
+echo "  Password: [Set via DB_PASSWORD env var]"
 echo ""
 echo "Next steps:"
 echo "  1. Run: cd /home/mikecerqua/projects/3D-threejs-site"
